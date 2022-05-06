@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/curiosityFragment"
+    android:id="@+id/nav_graph">
+
+    <fragment
+        android:id="@+id/curiosityFragment"
+        android:name="com.example.appcentnasaapi.ui.home.rovers.curiosity.CuriosityFragment"
+        android:label="fragment_curiosity"
+        tools:layout="@layout/fragment_curiosity" >
+        <action
+            android:id="@+id/action_curiosityFragment_to_opportunityFragment"
+            app:destination="@id/opportunityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/opportunityFragment"
+        android:name="com.example.appcentnasaapi.ui.home.rovers.opportunity.OpportunityFragment"
+        android:label="fragment_opportunity"
+        tools:layout="@layout/fragment_opportunity" >
+        <action
+            android:id="@+id/action_opportunityFragment_to_spiritFragment"
+            app:destination="@id/spiritFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/spiritFragment"
+        android:name="com.example.appcentnasaapi.ui.home.rovers.spirit.SpiritFragment"
+        android:label="fragment_spirit"
+        tools:layout="@layout/fragment_spirit" />
+</navigation>

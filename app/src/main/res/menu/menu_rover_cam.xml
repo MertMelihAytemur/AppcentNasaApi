@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item
+        android:id="@+id/fhaz"
+        android:title="FHAZ" />
+
+    <item
+        android:id="@+id/rhaz"
+        android:title="RHAZ" />
+
+    <item
+        android:id="@+id/mast"
+        android:title="MAST"
+        />
+
+    <item
+        android:id="@+id/chemcam"
+        android:title="CHEMCAM" />
+
+    <item
+        android:id="@+id/mahli"
+        android:title="MAHLI" />
+
+    <item
+        android:id="@+id/mardi"
+        android:title="MARDI"
+        />
+
+    <item
+        android:id="@+id/navcam"
+        android:title="NAVCAM"
+        />
+    <item
+        android:id="@+id/pancam"
+        android:title="PANCAM"
+        />
+
+    <item
+        android:id="@+id/minites"
+        android:title="MINITES"
+        />
+</menu>
