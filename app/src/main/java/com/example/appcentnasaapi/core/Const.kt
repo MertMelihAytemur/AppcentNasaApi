@@ -1,4 +1,4 @@
-package com.example.appcentnasaapi.util
+package com.example.appcentnasaapi.core
 
 /**
  *Created by Mert Melih Aytemur on 30.04.2022.

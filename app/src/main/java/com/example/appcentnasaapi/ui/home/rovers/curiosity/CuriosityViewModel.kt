@@ -1,44 +1,82 @@
 package com.example.appcentnasaapi.ui.home.rovers.curiosity
 
 
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.appcentnasaapi.model.roverResponse.RoverResponse
-import com.example.appcentnasaapi.repository.RoverRepository
-import com.example.appcentnasaapi.util.Const.API_KEY
-import com.example.appcentnasaapi.util.Const.SOL
-import com.example.appcentnasaapi.util.network.NetworkResult
+import com.example.appcentnasaapi.domain.model.RoverPhotoRequestModel
+import com.example.appcentnasaapi.domain.usecase.curiosity.IGetCuriosityPhotosUseCase
+import com.example.appcentnasaapi.ui.home.rovers.curiosity.state.CuriosityUiState
+import com.example.appcentnasaapi.core.Const.API_KEY
+import com.example.appcentnasaapi.core.Const.SOL
+import com.example.appcentnasaapi.core.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 
 /**
  *Created by Mert Melih Aytemur on 30.04.2022.
  */
 @HiltViewModel
-class CuriosityViewModel @Inject constructor(private val roverRepository: RoverRepository) : ViewModel() {
-    var roverResponse : MutableLiveData<RoverResponse>? = MutableLiveData()
-    val isLoading : MutableLiveData<Boolean> = MutableLiveData()
-    val onError : MutableLiveData<String?> = MutableLiveData()
+class CuriosityViewModel @Inject constructor(
+    private val getCuriosityPhotosUseCase: IGetCuriosityPhotosUseCase
+) : BaseViewModel() {
+    private val _curiosityUiState = MutableStateFlow<CuriosityUiState>(CuriosityUiState.Empty)
+    val curiosityUiState : StateFlow<CuriosityUiState> = _curiosityUiState
 
+    private var roverPhotoRequestModel : RoverPhotoRequestModel
 
-    fun getCuriosityPhotos(
-        camera: String,
-        page : String
-    ) = viewModelScope.launch {
-        isLoading.value = true
-        val request = roverRepository.getCuriosityPhotos(SOL,camera,API_KEY,page)
-        when(request){
-            is NetworkResult.Success -> {
-                roverResponse?.value = request.data!!
-                isLoading.value = false
-            }
-            is NetworkResult.Error -> {
-                onError.value = request.message
-                isLoading.value = false
+    init {
+        // Initial values
+        roverPhotoRequestModel = RoverPhotoRequestModel(
+            sol = SOL,
+            camera = "fhaz",
+            apiKey = API_KEY,
+            page = "1"
+        )
+        getCuriosityPhotos()
+    }
+
+   private fun getCuriosityPhotos(){
+        viewModelScope.launch {
+            invokeUseCase(
+                getCuriosityPhotosUseCase.getCuriosityPhotos(roverPhotoRequestModel),
+                onSuccess = { roverPhotos ->
+                    updateUiState(CuriosityUiState.Success(roverPhotos))
+                },
+                onError = {throwable ->
+                    _curiosityUiState.update {
+                        CuriosityUiState.Error(throwable)
+                    }
+                }
+            )
+
+        }
+    }
+
+    private fun updateUiState(result: CuriosityUiState){
+        _curiosityUiState.update {
+            when(result){
+                is CuriosityUiState.Success -> CuriosityUiState.Success(result.data)
+                is CuriosityUiState.Error -> CuriosityUiState.Error(result.error)
+                else -> CuriosityUiState.Error(UnknownError())
             }
         }
+    }
+
+    fun clearUiState() {
+        _curiosityUiState.update {
+            CuriosityUiState.Empty
+        }
+    }
+
+    fun setCamera(camera : CharSequence?){
+        roverPhotoRequestModel = roverPhotoRequestModel.copy(camera = camera.toString())
+    }
+
+    fun setPage(page : CharSequence?){
+        roverPhotoRequestModel = roverPhotoRequestModel.copy(page = page.toString())
     }
 
 }

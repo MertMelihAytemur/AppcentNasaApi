@@ -62,7 +62,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.4.1"
-
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.20"
 
     // Retrofit
@@ -99,4 +98,10 @@ dependencies {
 
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //Skydoves Sandwich
+    implementation "com.github.skydoves:sandwich:1.3.2"
+
+    //
+    implementation 'com.github.yogacp:android-viewbinding:1.0.2'
 }
