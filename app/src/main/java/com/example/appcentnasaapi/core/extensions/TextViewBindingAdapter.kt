@@ -1,4 +1,4 @@
-package com.example.appcentnasaapi.util.extensions
+package com.example.appcentnasaapi.core.extensions
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
