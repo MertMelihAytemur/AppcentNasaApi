@@ -1,8 +1,8 @@
 package com.example.appcentnasaapi.di
 
 import androidx.databinding.ktx.BuildConfig
-import com.example.appcentnasaapi.network.service.RoverService
-import com.example.appcentnasaapi.util.Const.BASE_URL
+import com.example.appcentnasaapi.data.remote.network.service.RoverService
+import com.example.appcentnasaapi.core.Const.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,7 +64,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideApiFactory(retrofit: Retrofit) : RoverService{
+    fun provideApiFactory(retrofit: Retrofit) : RoverService {
         return retrofit.create(RoverService::class.java)
     }
 }
