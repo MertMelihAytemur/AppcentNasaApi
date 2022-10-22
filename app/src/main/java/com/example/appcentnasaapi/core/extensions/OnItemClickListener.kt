@@ -1,6 +1,6 @@
-package com.example.appcentnasaapi.util.extensions
+package com.example.appcentnasaapi.core.extensions
 
-import com.example.appcentnasaapi.model.roverResponse.Photo
+import com.example.appcentnasaapi.domain.model.roverResponse.Photo
 
 /**
  *Created by Mert Melih Aytemur on 30.04.2022.

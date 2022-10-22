@@ -1,9 +1,9 @@
-package com.example.appcentnasaapi.util.bindingadapter
+package com.example.appcentnasaapi.core.bindingadapter
 
 
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
-import com.example.appcentnasaapi.util.extensions.loadImageView
+import com.example.appcentnasaapi.core.extensions.loadImageView
 
 /**
  *Created by Mert Melih Aytemur on 30.04.2022.

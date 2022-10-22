@@ -1,4 +1,4 @@
-package com.example.appcentnasaapi.util.extensions
+package com.example.appcentnasaapi.core.extensions
 
 import android.content.Context
 import android.widget.ImageView

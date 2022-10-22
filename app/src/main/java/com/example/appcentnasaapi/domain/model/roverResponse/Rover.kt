@@ -1,4 +1,4 @@
-package com.example.appcentnasaapi.model.roverResponse
+package com.example.appcentnasaapi.domain.model.roverResponse
 
 
 import com.google.gson.annotations.SerializedName

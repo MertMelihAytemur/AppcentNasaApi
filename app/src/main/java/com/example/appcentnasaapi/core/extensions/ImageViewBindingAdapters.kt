@@ -1,4 +1,4 @@
-package com.example.appcentnasaapi.util.extensions
+package com.example.appcentnasaapi.core.extensions
 
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.databinding.BindingAdapter

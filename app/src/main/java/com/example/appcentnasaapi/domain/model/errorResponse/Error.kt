@@ -1,4 +1,4 @@
-package com.example.appcentnasaapi.model.errorResponse
+package com.example.appcentnasaapi.domain.model.errorResponse
 
 
 import com.google.gson.annotations.SerializedName

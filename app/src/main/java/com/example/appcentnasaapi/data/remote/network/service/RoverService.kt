@@ -1,6 +1,9 @@
-package com.example.appcentnasaapi.network.service
+package com.example.appcentnasaapi.data.remote.network.service
 
-import com.example.appcentnasaapi.model.roverResponse.RoverResponse
+import com.example.appcentnasaapi.domain.model.RoverPhotoRequestModel
+import com.example.appcentnasaapi.domain.model.roverResponse.RoverResponse
+import com.skydoves.sandwich.ApiResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -15,7 +18,7 @@ interface RoverService {
         @Query("camera") camera : String,
         @Query("api_key") apiKey : String,
         @Query("page") page : String
-    ) : RoverResponse
+    ) : ApiResponse<RoverResponse>
 
     @GET("rovers/opportunity/photos")
     suspend fun getOpportunityPhotos(
@@ -23,7 +26,7 @@ interface RoverService {
         @Query("camera") camera : String,
         @Query("api_key") apiKey : String,
         @Query("page") page : String
-    ) : RoverResponse
+    ) : ApiResponse<RoverResponse>
 
     @GET("rovers/spirit/photos")
     suspend fun getSpiritPhotos(
@@ -31,6 +34,6 @@ interface RoverService {
         @Query("camera") camera : String,
         @Query("api_key") apiKey : String,
         @Query("page") page : String
-    ) : RoverResponse
+    ) : ApiResponse<RoverResponse>
 
 }
