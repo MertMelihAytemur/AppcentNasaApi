@@ -5,11 +5,11 @@
     <data>
         <variable
             name="onItemClickListener"
-            type="com.example.appcentnasaapi.util.extensions.OnItemClickListener" />
+            type="com.example.appcentnasaapi.core.extensions.OnItemClickListener" />
 
         <variable
             name="photoDetail"
-            type="com.example.appcentnasaapi.model.roverResponse.Photo" />
+            type="com.example.appcentnasaapi.domain.model.roverResponse.Photo" />
     </data>
 
     <androidx.cardview.widget.CardView
