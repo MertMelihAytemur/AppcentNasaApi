@@ -5,7 +5,7 @@
     <data>
         <variable
             name="photoDetail"
-            type="com.example.appcentnasaapi.model.roverResponse.Photo" />
+            type="com.example.appcentnasaapi.domain.model.roverResponse.Photo" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
