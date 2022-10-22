@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.*
+import android.viewbinding.library.fragment.viewBinding
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -16,162 +17,24 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appcentnasaapi.R
 import com.example.appcentnasaapi.databinding.FragmentSpiritBinding
-import com.example.appcentnasaapi.model.roverResponse.Photo
+import com.example.appcentnasaapi.domain.model.roverResponse.Photo
 import com.example.appcentnasaapi.ui.adapter.RoverAdapter
-import com.example.appcentnasaapi.util.base.BaseFragment
-import com.example.appcentnasaapi.util.extensions.OnItemClickListener
+import com.example.appcentnasaapi.core.base.BaseFragment
+import com.example.appcentnasaapi.core.base.BaseViewModel
+import com.example.appcentnasaapi.core.extensions.OnItemClickListener
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class SpiritFragment : BaseFragment<FragmentSpiritBinding,SpiritViewModel>(
-    FragmentSpiritBinding::inflate
-) {
-    override val viewModel by viewModels<SpiritViewModel>()
-    private var photoList: MutableList<Photo> = mutableListOf()
-    private var cameraId: String = "fhaz" //inital value
-    private var page = 1
+class SpiritFragment : BaseFragment() {
+    private val binding : FragmentSpiritBinding by viewBinding()
+    private val viewModel : SpiritViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-    override fun onCreateFinished() {
-        getSpiritPhotos(cameraId)
-        setRecyclerViewAdapter()
+    override fun initView() {
+
     }
 
-    override fun initListeners() {
-    }
-
-    override fun observeEvents() {
-        with(viewModel){
-            roverResponse.observe(viewLifecycleOwner, Observer {
-                it?.let {
-                    it.photos.let {
-                        it?.forEach { photo ->
-                            photoList.add(photo)
-                        }
-                    }
-                }
-                (binding.rvSpirit.adapter as RoverAdapter).updateList(photoList)
-            })
-            isLoading.observe(viewLifecycleOwner, Observer {
-                handleViewAction(it)
-            })
-            onError.observe(viewLifecycleOwner, Observer {
-                Toast.makeText(requireContext(),it.toString(),Toast.LENGTH_SHORT).show()
-            })
-        }
-    }
-
-    private fun setRecyclerViewAdapter(){
-        val mLayoutManager = GridLayoutManager(context,2)
-        binding.rvSpirit.layoutManager = mLayoutManager
-
-        val mAdapter = RoverAdapter(object : OnItemClickListener{
-            override fun onClick(photoDetail: Photo) {
-                showDetailDialog(photoDetail)
-            }
-        })
-        binding.rvSpirit.adapter = mAdapter
-
-        //Pagination
-        binding.rvSpirit.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val lastPosition =
-                    (binding.rvSpirit.layoutManager as GridLayoutManager).findLastVisibleItemPosition()
-                val listSize = binding.rvSpirit.adapter?.itemCount
-
-                if(listSize == (lastPosition+1)){
-                    getSpiritPhotos(cameraId)
-                }
-            }
-        })
-    }
-
-    private fun getSpiritPhotos(camera : String){
-        viewModel.getSpiritPhotos(camera,page.toString())
-    }
-
-    private fun handleViewAction(isLoading : Boolean = false){
-        //binding.rvSpirit.isVisible = !isLoading
-        binding.progressBar.isVisible = isLoading
-    }
-    @SuppressLint("SetTextI18n")
-    private fun showDetailDialog(photoDetail : Photo){
-        val photoUrl: String = photoDetail.imgSrc.toString()
-        val photoTakenDate: String = photoDetail.earthDate.toString()
-        val roverName: String = photoDetail.rover?.name.toString()
-        val roverCamera: String = photoDetail.camera?.name.toString()
-        val roverStatus: String = photoDetail.rover?.status.toString()
-        val roverLandingDate: String = photoDetail.rover?.landingDate.toString()
-        val roverLaunchingDate: String = photoDetail.rover?.launchDate.toString()
-
-        val dialog = Dialog(requireContext())
-        dialog.setContentView(R.layout.dialog_photo_detail)
-        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
-
-        val ivPhoto = dialog.findViewById<ImageView>(R.id.ivPhoto)
-        val tvPhotoTakenDate = dialog.findViewById<TextView>(R.id.tvPhotoTakenDate)
-        val tvRoverName = dialog.findViewById<TextView>(R.id.tvRoverName)
-        val tvRoverCamera = dialog.findViewById<TextView>(R.id.tvRoverCamera)
-        val tvRoverStatus = dialog.findViewById<TextView>(R.id.tvRoverState)
-        val tvRoverLandingDate = dialog.findViewById<TextView>(R.id.tvLandingDate)
-        val tvRoverLaunchingDate = dialog.findViewById<TextView>(R.id.tvLaunchingDate)
-
-        Picasso.get().load(photoUrl).into(ivPhoto);
-        tvPhotoTakenDate.text = "•Photo Taken Date: $photoTakenDate"
-        tvRoverName.text = "•RoverName: $roverName"
-        tvRoverCamera.text = "•Camera Name: $roverCamera"
-        tvRoverStatus.text = "•Rover Status: $roverStatus"
-        tvRoverLandingDate.text = "•Landing Date: $roverLandingDate"
-        tvRoverLaunchingDate.text = "•Launching Date: $roverLaunchingDate"
-
-        dialog.window?.let {
-            it.attributes.windowAnimations = R.style.SlidingDialogAnimation
-        }
-        dialog.show()
-    }
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.removeItem(R.id.mast)
-        menu.removeItem(R.id.chemcam)
-        menu.removeItem(R.id.mahli)
-        menu.removeItem(R.id.mardi)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.fhaz -> {
-                cameraId = item.title.toString()
-                selectRoverCamera(cameraId)
-            }
-            R.id.rhaz -> {
-                cameraId = item.title.toString()
-                selectRoverCamera(cameraId)
-            }
-            R.id.navcam -> {
-                cameraId = item.title.toString()
-                selectRoverCamera(cameraId)
-            }
-            R.id.pancam -> {
-                cameraId = item.title.toString()
-                selectRoverCamera(cameraId)
-            }
-
-            R.id.minites -> {
-                cameraId = item.title.toString()
-                selectRoverCamera(cameraId)
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-    private fun selectRoverCamera(cameraId : String){
-        photoList.clear()
-        page = 0
-        getSpiritPhotos(cameraId)
-    }
+    override fun layoutRes(): Int = R.layout.fragment_spirit
+    override fun viewModel(): BaseViewModel = viewModel
 }

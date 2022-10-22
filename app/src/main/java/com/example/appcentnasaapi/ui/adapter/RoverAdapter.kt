@@ -3,49 +3,47 @@ package com.example.appcentnasaapi.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.appcentnasaapi.core.base.BaseListAdapter
 import com.example.appcentnasaapi.databinding.RoverItemBinding
-import com.example.appcentnasaapi.model.roverResponse.Photo
+import com.example.appcentnasaapi.domain.model.roverResponse.Photo
 
 
-import com.example.appcentnasaapi.util.extensions.OnItemClickListener
+import com.example.appcentnasaapi.core.extensions.OnItemClickListener
+import com.example.appcentnasaapi.domain.model.roverResponse.RoverResponse
+import com.example.appcentnasaapi.ui.viewholder.RoverViewHolder
 
 /**
  *Created by Mert Melih Aytemur on 30.04.2022.
  */
 class RoverAdapter(
-    private val onItemClickListener: OnItemClickListener
-) : RecyclerView.Adapter<RoverAdapter.RoverViewHolder>() {
+    private val onItemClick : (roverPhoto : Photo) -> Unit
+) : BaseListAdapter<Photo>(
+    itemsSame = {old, new -> old == new},
+    contentsSame = {old, new -> old.equals(new)}
+) {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        inflater: LayoutInflater,
+        viewType: Int
+    ): RecyclerView.ViewHolder {
+        val binding = RoverItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return RoverViewHolder(binding)
+    }
 
-    private var photos = mutableListOf<Photo>()
-
-    class RoverViewHolder(private val itemBinding: RoverItemBinding) :
-        RecyclerView.ViewHolder(itemBinding.root) {
-        fun bind(listener : OnItemClickListener, photoDetail : Photo) {
-            itemBinding.onItemClickListener = listener
-            itemBinding.photoDetail = photoDetail
-            itemBinding.executePendingBindings()
-        }
-        companion object {
-            fun from(parent: ViewGroup): RoverViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = RoverItemBinding.inflate(layoutInflater, parent, false)
-
-                return RoverViewHolder(binding)
-            }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        (holder as RoverViewHolder).apply {
+            bind(getItem(position))
+            onItemClickListener(onItemClick)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = RoverViewHolder.from(parent)
+    override fun submitList(list: MutableList<Photo>?) {
 
-    override fun onBindViewHolder(holder: RoverViewHolder, position: Int) {
-        holder.bind(onItemClickListener,photos[position])
-    }
-
-    override fun getItemCount() = photos.size
-
-    fun updateList(_photos: MutableList<Photo>) {
-        photos = _photos
-        notifyDataSetChanged()
+        super.submitList(list)
     }
 
 }
